@@ -1,0 +1,3 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+args: ['build', '-t', 'gcr.io/open-baltimore-data/github.com/jmathena1/baltimore-city-employee-salaries', '-f', 'Dockerfile', .]
