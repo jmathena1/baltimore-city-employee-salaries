@@ -1,7 +1,6 @@
 FROM python:3.11-slim-bookworm
-ARG PORT=8080
-WORKDIR /home
-COPY requirements.txt requirements.txt
+WORKDIR /home/
+COPY requirements.txt ./
+COPY main.py ./
 RUN pip install -r requirements.txt
-COPY . .
-CMD ["python", "main.py"]
+CMD ["python", "./main.py"]

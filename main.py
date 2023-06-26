@@ -47,3 +47,6 @@ def upsert_salary_data(df):
 def main():
     city_salaries_df = get_salary_data(get_object_ids(C_OBJECT_IDS_URL), C_SALARIES_URL)
     upsert_salary_data(city_salaries_df)
+
+if __name__ == "__main__":
+    main()
