@@ -2,7 +2,7 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   args:
   - gcloud
-  - functions
+  - function
   - deploy
   - get-baltimore-city-employee-salaries-v3
   - --region=us-central1
