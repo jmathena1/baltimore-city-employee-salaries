@@ -1,5 +1,11 @@
 steps:
-  options:
-    logging: CLOUD_LOGGING_ONLY
-- name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/open-baltimore-data/github.com/jmathena1/baltimore-city-employee-salaries', '-f', 'Dockerfile', .]
+- name: 'gcr.io/open-data-baltimore/city-salaries'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - get-baltimore-city-employee-salaries-v3
+  - --region=us-central1
+  - --source=github_jmathena1_baltimore-city-employee-salaries
+  - --trigger-http
+  - --runtime=python311
