@@ -44,6 +44,6 @@ def upsert_salary_data(df):
     #upload blob to open baltimore data bucket
     blob.upload_from_string(pd.DataFrame(df).to_csv(index = False), content_type = 'csv')
 
-def main():
+def main(_):
     city_salaries_df = get_salary_data(get_object_ids(C_OBJECT_IDS_URL), C_SALARIES_URL)
     upsert_salary_data(city_salaries_df)
