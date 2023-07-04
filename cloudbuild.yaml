@@ -10,3 +10,4 @@ steps:
   - --entry-point=main
   - --trigger-http
   - --runtime=python311
+  - --timeout=540
