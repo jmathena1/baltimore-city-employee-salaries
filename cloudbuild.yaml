@@ -6,7 +6,7 @@ steps:
   - deploy
   - get-baltimore-city-employee-salaries-v3
   - --region=us-central1
-  - --source=https://source.developers.google.com/projects/$PROJECT_ID/repos/$REPO_NAME/
+  - --source=https://source.developers.google.com/projects/$PROJECT_ID/repos/$REPO_NAME/revisions/master
   - --entry-point=main
   - --trigger-http
   - --runtime=python311
