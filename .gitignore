@@ -1,3 +1,4 @@
 # local dev
 *venv
 *-code-workspace
+.ipynb_checkpoints
