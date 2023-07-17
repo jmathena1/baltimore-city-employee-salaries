@@ -1,0 +1,61 @@
+name: Publish Notebooks to Github Pages
+on:
+  push:
+    branches:
+      - main
+    paths:
+       # run only when ...
+       # ... the notebooks changed
+       - 'jupyter/*.ipynb'
+       # ... I modified something in the workflow
+       - '.github/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+          cache: 'pip' # will run faster with a cache
+
+      - name: Install requirements
+        run: pip install -r jupyter/requirements-jupyter.txt
+
+      - name: Export notebooks
+        run: | 
+          export JUPYTER_CONFIG_DIR=./jupyter
+          jupyter nbconvert jupyter/*.ipynb --execute --to html
+
+      - name: Prepare public folder
+        id: folder # ← to reference the output of this step later
+        run: |
+          mkdir public
+          cp jupyter/*.html public
+          echo "name=public" >> $GITHUB_OUTPUT
+
+      - name: Setup Pages
+        id: pages # ← used in the deploy job (keep reading)
+        uses: actions/configure-pages@v2
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: ${{ steps.folder.outputs.name }}
+
+  deploy:
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+      
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
