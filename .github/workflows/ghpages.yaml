@@ -23,7 +23,7 @@ jobs:
           cache: 'pip' # will run faster with a cache
 
       - name: Install requirements
-        run: pip install -r ./jupyter/requirements-jupyter.txt
+        run: pip install -r requirements.txt
 
       - name: Export notebooks
         run: | 
