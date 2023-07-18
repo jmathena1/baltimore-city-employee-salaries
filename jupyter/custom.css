@@ -1,7 +1,0 @@
-/** Make jupyter HTML export more responsive. */
-@media (max-width: 600px) { 
-    .jp-InputPrompt.jp-InputArea-prompt, 
-    .jp-OutputPrompt.jp-OutputArea-prompt { 
-        display: none !important;
-    }
-}
