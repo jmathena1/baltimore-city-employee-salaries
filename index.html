@@ -3,7 +3,7 @@
 <head><meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>index</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>bmore-city-salaries</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 
 
 
@@ -15219,14 +15219,16 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
-<h1 id="Baltimore-City-Employee-Salaries">Baltimore City Employee Salaries<a class="anchor-link" href="#Baltimore-City-Employee-Salaries">&#182;</a></h1><p>Here I go through an exploratory analysis of Baltimore city employee salaries. I obtained all data through the City of Baltimore's <a href="https://data.baltimorecity.gov/datasets/baltimore::baltimore-city-employee-salaries-new/about">Open Baltimore Data</a> platform (OBD).</p>
-<p>I created a small Python function that batches calls to the OBD rest API. I connected the GitHub repo I store the python code in to a gcloud source repo. Each time a push a change to the <code>master</code> branch, GH notifies gcloud and Cloud Build uses the updated cloud source repo to deploy a new version of the function to Cloud Function. Since OBD appears to only update the data once per yeat or so, I run the function manually. However, Cloud Scheduler would run my function at any interval I want using cron.</p>
-<p>Once the function finishes querying OBD, it stores the data in a <code>csv</code> in Cloud Storage. From there, I connect the <code>csv</code> to a BigQuery table. I considered updating the function to write directly to the BigQuery table, but I want to see how regularly OBD updates this dataset going forward and if they change the schema. They've changed the schema for this dataset at least once that I've seen. I'll add some other details about this data set in the technical notes below.</p>
+<h1 id="Baltimore-City-Employee-Salaries">Baltimore City Employee Salaries<a class="anchor-link" href="#Baltimore-City-Employee-Salaries">&#182;</a></h1><p><em>If you're viewing this on your phone, I'd recommend enabling desktop mode. In Google Chrome, you can do so by tapping the three dots at the top right of your screen. <code>Desktop Site</code> usually has a checkbox next to it that you fill to enable the change. You can zoom in and out of any section with your fingers. My apologies for the hassle and thanks for reading!</em></p>
+<p>Here, I go through an exploratory analysis of Baltimore city employee salaries. I obtained all data through the City of Baltimore's <a href="https://data.baltimorecity.gov/datasets/baltimore::baltimore-city-employee-salaries-new/about">Open Baltimore Data</a> platform (OBD).</p>
+<p>I created a small Python function that batches calls to the OBD Rest API. I connected the GitHub repo I stored the python code in to a gcloud source repo. Each time I push a change to the <code>master</code> branch, GH notifies gcloud and Cloud Build uses the updated cloud source repo to deploy a new version to Cloud Function. Since OBD appears to only update the data once per year or so, I run the function manually. However, Cloud Scheduler would run my function at any interval I want using cron.</p>
+<p>Once the function finishes querying OBD, it stores the data in a <code>csv</code> in Cloud Storage. From there, I connect the <code>csv</code> to a BigQuery table. I considered updating the function to write directly to the BigQuery table, but I want to see how regularly OBD updates this data set going forward and if they change the schema. They've changed the schema for this dataset at least once that I've seen. I'll add some other details about this data set and a flow chart in the technical notes below.</p>
 <h2 id="Technical-Notes-and-Disclosures">Technical Notes and Disclosures<a class="anchor-link" href="#Technical-Notes-and-Disclosures">&#182;</a></h2><ul>
 <li>OBD only has one name field, which made it difficult to group records by person for analysis. For example, I previously combined the <code>firstName</code>, <code>lastName</code>, and <code>middleInitial</code> fields with <code>AgencyID</code> to create an <code>employeeSlug</code> that I use to track workers across organizations. With just the <code>Name</code> and <code>AgencyID</code> fields to work with in this release, tracking individual workers is difficult, though not impossible. It'll definitely be the work of a future analysis. This initial analysis focusses on agency-level salary measures.</li>
 <li>I excluded salary records where the agency had less than 1000 salary records total or the record omitted the <code>HireDate</code> field. I wanted to keep the initial anaylsis as robust as possible, so I elected to clean the data in this way.</li>
 <li>I regrouped the raw <code>AgencyName</code> values because the data set duplicated some agency names, made distinctions inside of an agency I didn't want to keep, etc. For example, OBD broke out &quot;Rec &amp; Parks&quot; to &quot;Rec &amp; Parks - Parks&quot;, &quot;Rec &amp; Parks - part-time&quot;, &quot;Rec &amp; Parks - Admin&quot;, etc.</li>
 </ul>
+<p><img src="../city-salaries-request-flow.png" alt="City Salaries Data Set API Request Flow" /></p>
 
 </div>
 </div>
@@ -15260,7 +15262,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import necessary libraries</span>
@@ -15285,7 +15287,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import employee name info</span>
@@ -15329,7 +15331,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># clean fields for analysis</span>
@@ -15411,7 +15413,8 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <span class="n">employee_salaries</span> <span class="o">=</span> <span class="n">employee_salaries</span><span class="p">[</span><span class="n">employee_salaries</span><span class="p">[</span><span class="s2">&quot;hireDate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">notnull</span><span class="p">()]</span>
 <span class="n">employee_salaries</span><span class="p">[</span><span class="s1">&#39;hireDate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">employee_salaries</span><span class="p">[</span><span class="s2">&quot;hireDate&quot;</span><span class="p">],</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;ms&quot;</span><span class="p">)</span>
 <span class="c1"># may need to implement check and ensure tenure across unique employees is the same</span>
-<span class="n">employee_salaries</span><span class="p">[</span><span class="s1">&#39;tenure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">employee_salaries</span><span class="p">[</span><span class="s1">&#39;hireDate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">hire_date</span><span class="p">:</span> <span class="n">rd</span><span class="o">.</span><span class="n">relativedelta</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">hire_date</span><span class="p">)</span><span class="o">.</span><span class="n">years</span><span class="p">)</span>                                       
+<span class="n">employee_salaries</span><span class="p">[</span><span class="s1">&#39;tenure&#39;</span><span class="p">]</span> <span class="o">=</span> \
+    <span class="n">employee_salaries</span><span class="p">[</span><span class="s1">&#39;hireDate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">hire_date</span><span class="p">:</span> <span class="n">rd</span><span class="o">.</span><span class="n">relativedelta</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">hire_date</span><span class="p">)</span><span class="o">.</span><span class="n">years</span><span class="p">)</span>                                       
 </pre></div>
 
      </div>
@@ -15424,7 +15427,7 @@ body[data-format='mobile'] .jp-OutputArea-child .jp-OutputArea-output {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[&nbsp;]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In&nbsp;[4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
      <div class="CodeMirror cm-s-jupyter">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># count number of records per city agency</span>
