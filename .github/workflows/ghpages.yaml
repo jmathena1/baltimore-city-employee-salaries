@@ -11,6 +11,8 @@ on:
        - 'jupyter/*.ipynb'
        # ... I modified something in the workflow
        - '.github/**'
+       # added requirements
+       - 'requirements.txt'
 jobs:
   build:
     runs-on: ubuntu-latest
